@@ -25,9 +25,11 @@ class App extends React.Component {
 
   formSubmithanler = data => {
     data.id = uuidv4();
-    const a = this.state.contacts.filter(contact => contact.name === data.name);
+    const normalizedName = this.state.contacts.find(
+      contact => contact.name.toLowerCase() === data.name.toLowerCase(),
+    );
 
-    if (a.length === 1) {
+    if (normalizedName) {
       alert(`${data.name} is alredy in contacts.`);
       return;
     }
@@ -50,22 +52,17 @@ class App extends React.Component {
   };
 
   componentDidMount = () => {
-    console.log(`component did mount`);
     const storage = localStorage.getItem('contacts');
     const parsedContacts = JSON.parse(storage);
-    console.log(`array of objects`, parsedContacts);
+
     if (parsedContacts) {
       this.setState({ contacts: parsedContacts });
     }
   };
   componentDidUpdate = (prevProps, prevState) => {
-    console.log(`prevstate`, prevState);
-    console.log(`state`, this.state.contacts);
     if (prevState.contacts !== this.state.contacts) {
       localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
-      console.log(`change`);
     }
-    // console.log(`prevprops`, prevProps)
   };
   render() {
     const { filter } = this.state;
